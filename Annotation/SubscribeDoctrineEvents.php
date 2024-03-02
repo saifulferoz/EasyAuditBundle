@@ -19,7 +19,9 @@ namespace Xiidea\EasyAuditBundle\Annotation;
  *
  * @author Roni Saha <roni@xiidea.net>
  */
-/* @final */ class SubscribeDoctrineEvents
+#[\Attribute]
+/* @final */
+class SubscribeDoctrineEvents
 {
     public $events = array();
 
@@ -32,7 +34,10 @@ namespace Xiidea\EasyAuditBundle\Annotation;
             return;
         }
 
-        $this->events = is_array($values['events']) ? $values['events'] : array_map('trim', explode(',', $values['events']));
+        $this->events = is_array($values['events']) ? $values['events'] : array_map(
+            'trim',
+            explode(',', $values['events'])
+        );
 
         $this->events = array_filter($this->events);
     }

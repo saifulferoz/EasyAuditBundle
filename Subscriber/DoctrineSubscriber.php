@@ -13,17 +13,17 @@ namespace Xiidea\EasyAuditBundle\Subscriber;
 
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Persistence\Event\LifecycleEventArgs;
+use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Xiidea\EasyAuditBundle\Annotation\SubscribeDoctrineEvents;
 use Xiidea\EasyAuditBundle\Events\DoctrineEvents;
 use Xiidea\EasyAuditBundle\Events\DoctrineObjectEvent;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 
 #[AsDoctrineListener]
 class DoctrineSubscriber
 {
-    /** @var \Doctrine\Common\Annotations\Reader */
-    private $annotationReader;
     private array $toBeDeleted = [];
-    private  $dispatcher = null;
+    private EventDispatcherInterface|null $dispatcher = null;
     private array $entities;
 
     public function __construct($entities = [])
@@ -31,17 +31,17 @@ class DoctrineSubscriber
         $this->entities = $entities;
     }
 
-    public function postPersist(LifecycleEventArgs $args)
+    public function postPersist(LifecycleEventArgs $args): void
     {
         $this->handleEvent(DoctrineEvents::ENTITY_CREATED, $args);
     }
 
-    public function postUpdate(LifecycleEventArgs $args)
+    public function postUpdate(LifecycleEventArgs $args): void
     {
         $this->handleEvent(DoctrineEvents::ENTITY_UPDATED, $args);
     }
 
-    public function preRemove(LifecycleEventArgs $args)
+    public function preRemove(LifecycleEventArgs $args): void
     {
         if (false === $this->isConfiguredToTrack($args->getObject(), DoctrineEvents::ENTITY_DELETED)) {
             return;
@@ -56,7 +56,7 @@ class DoctrineSubscriber
         $this->toBeDeleted[$className][spl_object_hash($args->getObject())] = $this->getIdentity($args, $className);
     }
 
-    public function postRemove(LifecycleEventArgs $args)
+    public function postRemove(LifecycleEventArgs $args): void
     {
         $identity = $this->getToBeDeletedId($args->getObject());
 
@@ -75,10 +75,10 @@ class DoctrineSubscriber
     }
 
     /**
-     * @param  string  $eventName
-     * @param  LifecycleEventArgs  $args
+     * @param string $eventName
+     * @param LifecycleEventArgs $args
      */
-    private function handleEvent($eventName, LifecycleEventArgs $args)
+    private function handleEvent($eventName, LifecycleEventArgs $args): void
     {
         if (true === $this->isConfiguredToTrack($args->getObject(), $eventName)) {
             $this->dispatcher->dispatch(
@@ -90,11 +90,11 @@ class DoctrineSubscriber
 
     /**
      * @param $entity
-     * @param  string  $eventName
+     * @param string $eventName
      *
      * @return bool
      */
-    private function isConfiguredToTrack($entity, $eventName = '')
+    private function isConfiguredToTrack($entity, $eventName = ''): bool
     {
         $class = ClassUtils::getClass($entity);
         $eventType = DoctrineEvents::getShortEventType($eventName);
@@ -103,24 +103,21 @@ class DoctrineSubscriber
             return $track;
         }
 
-        if (!isset($this->entities[$class])) {
-            return false;
-        }
-
         if ($this->shouldTrackAllEventType($class)) {
             return true;
         }
 
         return $this->shouldTrackEventType($eventType, $class);
+
     }
 
     /**
      * @param $entity
-     * @param  string  $eventType
+     * @param string $eventType
      *
      * @return bool|null
      */
-    protected function isAnnotatedEvent($entity, $eventType)
+    protected function isAnnotatedEvent($entity, $eventType): ?bool
     {
         $metaData = $this->hasAnnotation($entity);
 
@@ -136,21 +133,11 @@ class DoctrineSubscriber
      *
      * @return null|object
      */
-    protected function hasAnnotation($entity)
+    protected function hasAnnotation($entity): ?object
     {
         $reflection = $this->getReflectionClassFromObject($entity);
 
-        return $this
-            ->getAnnotationReader()
-            ->getClassAnnotation($reflection, SubscribeDoctrineEvents::class);
-    }
-
-    /**
-     * @return \Doctrine\Common\Annotations\Reader
-     */
-    protected function getAnnotationReader()
-    {
-        return $this->annotationReader;
+        return $reflection->getAttributes(SubscribeDoctrineEvents::class)[0] ?? null;
     }
 
     /**
@@ -158,7 +145,7 @@ class DoctrineSubscriber
      *
      * @return \ReflectionClass
      */
-    protected function getReflectionClassFromObject($object)
+    protected function getReflectionClassFromObject($object): \ReflectionClass
     {
         $class = ClassUtils::getClass($object);
 
@@ -166,41 +153,34 @@ class DoctrineSubscriber
     }
 
     /**
-     * @param  string  $eventType
-     * @param  string  $class
+     * @param string $eventType
+     * @param string $class
      *
      * @return bool
      */
-    private function shouldTrackEventType($eventType, $class)
+    private function shouldTrackEventType($eventType, $class): bool
     {
         return is_array($this->entities[$class]) && in_array($eventType, $this->entities[$class]);
     }
 
     /**
-     * @param  string  $class
+     * @param string $class
      *
      * @return bool
      */
-    private function shouldTrackAllEventType($class)
+    private function shouldTrackAllEventType($class): bool
     {
         return empty($this->entities[$class]);
     }
 
-    /**
-     * @param  \Doctrine\Common\Annotations\Reader  $annotationReader
-     */
-    public function setAnnotationReader($annotationReader = null)
-    {
-        $this->annotationReader = $annotationReader;
-    }
 
     /**
-     * @param  LifecycleEventArgs  $args
+     * @param LifecycleEventArgs $args
      * @param $className
      *
      * @return array
      */
-    protected function getIdentity(LifecycleEventArgs $args, $className)
+    protected function getIdentity(LifecycleEventArgs $args, $className): array
     {
         return $args->getObjectManager()->getClassMetadata($className)->getIdentifierValues($args->getObject());
     }
@@ -210,7 +190,7 @@ class DoctrineSubscriber
      *
      * @return bool
      */
-    private function isScheduledForDelete($entity)
+    private function isScheduledForDelete($entity): bool
     {
         $originalClassName = ClassUtils::getClass($entity);
 
@@ -222,9 +202,9 @@ class DoctrineSubscriber
     }
 
     /**
-     * @param  EventDispatcherInterface  $dispatcher
+     * @param EventDispatcherInterface $dispatcher
      */
-    public function setDispatcher($dispatcher)
+    public function setDispatcher(EventDispatcherInterface $dispatcher): void
     {
         $this->dispatcher = $dispatcher;
     }
