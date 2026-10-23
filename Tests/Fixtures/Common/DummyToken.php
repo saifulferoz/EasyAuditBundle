@@ -79,7 +79,7 @@ class DummyToken implements TokenInterface
      */
     public function __toString()
     {
-        return;
+        return (string) $this->getUsername();
     }
 
     /**
@@ -203,5 +203,15 @@ class DummyToken implements TokenInterface
     public function setAttribute($name, $value)
     {
         return;
+    }
+
+    public function __serialize()
+    {
+        return array('user' => $this->user);
+    }
+
+    public function __unserialize(array $data)
+    {
+        $this->user = $data['user'];
     }
 }

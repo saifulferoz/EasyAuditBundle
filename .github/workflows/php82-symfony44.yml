@@ -1,0 +1,46 @@
+name: PHP 8.2 / Symfony 4.4
+
+on: [push, pull_request]
+
+jobs:
+  compatibility:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          tools: composer:2.9.2
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          coverage: none
+      - name: Install Symfony 4.4 test dependencies
+        run: |
+          # Symfony 4.4 has known advisories; bypass blocking only for this legacy test job.
+          COMPOSER=composer.php82.json composer update --no-interaction --prefer-dist --no-progress --no-security-blocking
+      - name: Run tests
+        run: vendor-php82/bin/phpunit -c phpunit.php82.xml.dist --no-coverage --do-not-cache-result
+
+  legacy:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - php: '5.6'
+            symfony: '2.8.*'
+          - php: '7.3'
+            symfony: '4.4.*'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          tools: composer:2.2
+          extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
+          coverage: none
+      - name: Install legacy test dependencies
+        run: |
+          composer require --dev --no-update 'symfony/symfony:${{ matrix.symfony }}'
+          composer update --no-interaction --prefer-dist --no-progress
+      - name: Run legacy tests
+        run: vendor/bin/phpunit

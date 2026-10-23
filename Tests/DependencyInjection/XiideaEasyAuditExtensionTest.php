@@ -18,10 +18,12 @@ use Xiidea\EasyAuditBundle\DependencyInjection\XiideaEasyAuditExtension;
 
 class XiideaEasyAuditExtensionTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var ContainerBuilder */
     protected $container;
 
-    protected function setUp()
+    protected function setUpTest()
     {
         $this->container = new ContainerBuilder();
     }
@@ -62,11 +64,9 @@ class XiideaEasyAuditExtensionTest extends TestCase
         $this->assertHasDefinition('xiidea.easy_audit.default_doctrine_event_resolver');
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testEasyAuditLoadThrowsExceptionUnlessEntityClassSet()
     {
+        $this->expectException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
         $loader = new XiideaEasyAuditExtension();
         $config = $this->getRequiredConfig();
         unset($config['audit_log_class']);
@@ -74,11 +74,9 @@ class XiideaEasyAuditExtensionTest extends TestCase
         $loader->load(array($config), new ContainerBuilder());
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testEasyAuditLoadThrowsExceptionUnlessUserPropertySet()
     {
+        $this->expectException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
         $loader = new XiideaEasyAuditExtension();
         $config = $this->getRequiredConfig();
         unset($config['user_property']);
@@ -86,11 +84,9 @@ class XiideaEasyAuditExtensionTest extends TestCase
         $loader->load(array($config), new ContainerBuilder());
     }
 
-    /**
-     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
-     */
     public function testEasyAuditLoadThrowsExceptionForInvalidLoggerChannelDefinition()
     {
+        $this->expectException('\Symfony\Component\Config\Definition\Exception\InvalidConfigurationException');
         $loader = new XiideaEasyAuditExtension();
         $config = $this->getRequiredConfig();
         $config['logger_channel'] = array('foo.logger' => array('info', '!debug'));

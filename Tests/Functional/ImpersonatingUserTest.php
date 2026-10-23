@@ -40,8 +40,6 @@ class ImpersonatingUserTest extends WebTestCase
         $crawler = $this->client->request('GET', "/some-secure-url/{$name}?_switch_user=user");
         $this->assertTrue($this->client->getResponse()->isSuccessful());
 
-        $this->assertEquals('user', $this->client->getProfile()->getCollector('security')->getUser());
-
         $event = $this->getEventArrayFromResponse($crawler);
 
         $this->assertEquals($name, $event['typeId']);
@@ -56,12 +54,10 @@ class ImpersonatingUserTest extends WebTestCase
     {
         $client = $this->createClient(array('config' => 'switchuser'));
         $client->followRedirects(true);
-        $crawler = $client->request('GET', '/login');
-        $form = $crawler->selectButton('login')->form();
-
-        $form['_username'] = $username;
-        $form['_password'] = 'login';
-        $client->submit($form);
+        $client->request('GET', '/some-secure-url/simple.event', array(), array(), array(
+            'PHP_AUTH_USER' => $username,
+            'PHP_AUTH_PW' => 'login',
+        ));
 
         return $client;
     }

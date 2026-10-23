@@ -21,6 +21,8 @@ use Doctrine\Common\Persistence\ObjectManager;
 
 class DoctrineSubscriberTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $dispatcher;
 
@@ -33,7 +35,7 @@ class DoctrineSubscriberTest extends TestCase
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $metaData;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->dispatcher = $this->createMock('Symfony\Component\EventDispatcher\EventDispatcherInterface');
         $this->entityManager = $this->createMock(ObjectManager::class);
@@ -56,9 +58,9 @@ class DoctrineSubscriberTest extends TestCase
     {
         $entities = array('entity1', 'entity2');
         $subscriber = new DoctrineSubscriber($entities);
-        $this->assertAttributeEquals($entities, 'entities', $subscriber);
+        $this->assertEquals($entities, $this->getObjectProperty($subscriber, 'entities'));
         $subscriber = new DoctrineSubscriber(array());
-        $this->assertAttributeEquals(array(), 'entities', $subscriber);
+        $this->assertEquals(array(), $this->getObjectProperty($subscriber, 'entities'));
     }
 
     public function testSubscribedEvents()

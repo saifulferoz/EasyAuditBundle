@@ -18,13 +18,15 @@ use Symfony\Component\Console\ConsoleEvents;
 
 class DoctrineDeleteEventLoggerTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $logger;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $responseevent;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->responseevent = $this->getMockBuilder('Symfony\Component\HttpKernel\Event\FilterResponseEvent')
             ->disableOriginalConstructor()
@@ -37,7 +39,7 @@ class DoctrineDeleteEventLoggerTest extends TestCase
     public function testConstructor()
     {
         $subscriber = new DoctrineDeleteEventLogger($this->logger);
-        $this->assertAttributeEquals($this->logger, 'logger', $subscriber);
+        $this->assertEquals($this->logger, $this->getObjectProperty($subscriber, 'logger'));
     }
 
     public function testSubscribedEvents()

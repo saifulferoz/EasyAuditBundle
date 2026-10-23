@@ -22,6 +22,8 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\UserEntity;
 
 class DoctrineObjectEventResolverTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var DoctrineObjectEventResolver */
     private $eventResolver;
 
@@ -40,7 +42,7 @@ class DoctrineObjectEventResolverTest extends TestCase
     /** @var DoctrineObjectEvent */
     private $event;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->doctrine = $this->createMock('Doctrine\Common\Persistence\ManagerRegistry');
         $this->eventResolver = new DoctrineObjectEventResolver();

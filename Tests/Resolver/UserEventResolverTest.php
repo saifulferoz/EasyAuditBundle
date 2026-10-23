@@ -23,13 +23,15 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\UserEntity;
 
 class UserEventResolverTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $tokenStorage;
 
     /** @var UserEventResolver */
     private $eventResolver;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->eventResolver = new UserEventResolver();

@@ -18,6 +18,8 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\AuditLog;
 
 class LoggerFactoryTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var LoggerFactory */
     private $loggerFactory;
 
@@ -32,16 +34,14 @@ class LoggerFactoryTest extends TestCase
         ),
     );
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->loggerFactory = new LoggerFactory();
     }
 
-    /**
-     * @expectedException \Xiidea\EasyAuditBundle\Exception\InvalidServiceException
-     */
     public function testThrowsExceptionOnAddInvalidLoggerWithDebugModeOn()
     {
+        $this->expectException('\Xiidea\EasyAuditBundle\Exception\InvalidServiceException');
         $this->initiateContainerWithDebugMode(true);
         $this->loggerFactory->addLogger('invalid', new InvalidLogger());
     }
@@ -50,7 +50,7 @@ class LoggerFactoryTest extends TestCase
     {
         $this->initiateContainerWithDebugMode(false);
         $this->loggerFactory->addLogger('invalid', new InvalidLogger());
-        $this->assertAttributeEquals(array(), 'loggers', $this->loggerFactory);
+        $this->assertEquals(array(), $this->getObjectProperty($this->loggerFactory, 'loggers'));
     }
 
     public function testLoggerFactoryThrowsNoExceptionOnAddValidLogger()
@@ -59,7 +59,7 @@ class LoggerFactoryTest extends TestCase
 
         $this->loggerFactory->addLogger('valid', $logger1);
 
-        $this->assertAttributeEquals(array('valid' => $logger1), 'loggers', $this->loggerFactory);
+        $this->assertEquals(array('valid' => $logger1), $this->getObjectProperty($this->loggerFactory, 'loggers'));
     }
 
     public function testExecuteAllLoggers()

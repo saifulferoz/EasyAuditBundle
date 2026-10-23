@@ -18,13 +18,15 @@ use Xiidea\EasyAuditBundle\DependencyInjection\Compiler\MonologLoggerPass;
 
 class MonologLoggerPassTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject|ContainerBuilder */
     private $containerBuilder;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject|Definition */
     private $definition;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->containerBuilder = $this->createMock(ContainerBuilder::class);
         $this->definition = $this->createMock(Definition::class);

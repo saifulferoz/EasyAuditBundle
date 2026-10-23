@@ -15,6 +15,8 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 class BaseTestCase extends WebTestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var null|\Symfony\Bundle\FrameworkBundle\Client */
     protected $client = null;
 
@@ -26,7 +28,7 @@ class BaseTestCase extends WebTestCase
         );
     }
 
-    protected function setUp()
+    protected function setUpTest()
     {
         $this->client = static::createClient();
     }

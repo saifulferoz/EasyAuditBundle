@@ -33,6 +33,8 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\UserEntity;
 
 class EventResolverFactoryTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $tokenStorage;
 
@@ -42,7 +44,7 @@ class EventResolverFactoryTest extends TestCase
     /** @var Event */
     private $event;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->resolverFactory = new EventResolverFactory(array(), 'username', AuditLog::class);
@@ -131,11 +133,9 @@ class EventResolverFactoryTest extends TestCase
         ));
     }
 
-    /**
-     * @expectedException \Xiidea\EasyAuditBundle\Exception\UnrecognizedEventInfoException
-     */
     public function testInvalidResolverWithDebugOn()
     {
+        $this->expectException('\Xiidea\EasyAuditBundle\Exception\UnrecognizedEventInfoException');
         $this->event = new Basic();
         $this->initiateContainerWithDebugMode(true);
 
@@ -145,11 +145,9 @@ class EventResolverFactoryTest extends TestCase
         $this->assertNull($auditLog);
     }
 
-    /**
-     * @expectedException \Xiidea\EasyAuditBundle\Exception\InvalidServiceException
-     */
     public function testInvalidCustomResolverWithDebugOn()
     {
+        $this->expectException('\Xiidea\EasyAuditBundle\Exception\InvalidServiceException');
         $this->event = new Basic();
         $this->resolverFactory = new EventResolverFactory(array('custom' => 'r1'), 'username', AuditLog::class);
         $this->resolverFactory->setTokenStorage($this->tokenStorage);
@@ -281,11 +279,9 @@ class EventResolverFactoryTest extends TestCase
         $this->assertNull($auditLog);
     }
 
-    /**
-     * @expectedException \Xiidea\EasyAuditBundle\Exception\InvalidServiceException
-     */
     public function testCustomInValidEventResolverWithDebugOn()
     {
+        $this->expectException('\Xiidea\EasyAuditBundle\Exception\InvalidServiceException');
         $this->event = new Basic();
 
         $this->initiateContainerWithDebugMode(true);
@@ -405,11 +401,9 @@ class EventResolverFactoryTest extends TestCase
         ));
     }
 
-    /**
-     * @expectedException \Exception
-     */
     public function testEventResolverWhenInvalidUserPropertyOptionIsGivenWithDebugOn()
     {
+        $this->expectException('\Exception');
         $this->event = new Basic();
 
         $this->resolverFactory = new EventResolverFactory(array(), 'invalidProperty', AuditLog::class);
@@ -456,11 +450,9 @@ class EventResolverFactoryTest extends TestCase
         $this->assertEquals('Anonymous', $username);
     }
 
-    /**
-     * @expectedException \Xiidea\EasyAuditBundle\Exception\UnrecognizedEntityException
-     */
     public function testCreateEventObjectFromArrayThrowsExceptionOnInvalidEntity()
     {
+        $this->expectException('\Xiidea\EasyAuditBundle\Exception\UnrecognizedEntityException');
         $this->resolverFactory = new EventResolverFactory(array(), 'invalidProperty', Movie::class);
         $this->resolverFactory->setTokenStorage($this->tokenStorage);
 

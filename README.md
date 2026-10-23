@@ -14,6 +14,36 @@ A Symfony2 Bundle To Log Selective Events. It is easy to configure and easy to c
 **Note:** If you are using **Symfony** version **older then 2.4** you need to use [EasyAuditBundle 1.2.x](https://github.com/xiidea/EasyAuditBundle/tree/1.2.x)  
 **Note:** If you are using **Symfony** version **older then 2.6** you need to use [EasyAuditBundle 1.3.x](https://github.com/xiidea/EasyAuditBundle/tree/1.3.x)
 
+## PHP 8.2 compatibility
+
+The 1.4 bundle also supports PHP 8.2 with Symfony 4.4.51. Its public API,
+configuration and Doctrine Common 2.x integration are unchanged. The existing
+PHP 5.6/7.x requirements and legacy development setup are preserved.
+
+PHP 8.2 tests use a separate Composer manifest, vendor directory and PHPUnit
+configuration. Run these commands with PHP 8.2:
+
+```bash
+# Bypass advisory blocking only to install the legacy compatibility test stack.
+COMPOSER=composer.php82.json composer update --no-interaction --prefer-dist --no-security-blocking
+vendor-php82/bin/phpunit -c phpunit.php82.xml.dist --no-coverage
+```
+
+The usual `composer install` and `vendor/bin/phpunit` commands retain the legacy
+PHPUnit 5/6 setup. The PHP 8.2 suite uses PHPUnit 9.6; existing `at()` mock matchers
+produce deprecation warnings.
+
+The CI workflow checks these combinations:
+
+| PHP | Symfony | PHPUnit |
+| --- | --- | --- |
+| 5.6 | 2.8 | 5.7 |
+| 7.3 | 4.4 | 6.5 |
+| 8.2 | 4.4 | 9.6 |
+
+Symfony 4.4 is [unmaintained](https://symfony.com/releases/4.4). This compatibility
+work does not address security advisories in the framework.
+
 ## Install
 
 1.  Add EasyAuditBundle in your composer.json

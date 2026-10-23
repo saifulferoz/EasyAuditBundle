@@ -20,6 +20,8 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\UserEntity;
 
 class UserAwareComponentTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     private $tokenStorage;
 
@@ -29,7 +31,7 @@ class UserAwareComponentTest extends TestCase
     /** @var DummyUserAwareComponent */
     private $userAwareComponent;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
         $this->authChecker = $this->createMock('Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface');

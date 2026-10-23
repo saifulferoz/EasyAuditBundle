@@ -449,4 +449,16 @@ class UserEntity implements UserInterface
     {
         return $this;
     }
+
+    public function __serialize()
+    {
+        return array('id' => $this->id, 'username' => $this->username, 'roles' => $this->roles);
+    }
+
+    public function __unserialize(array $data)
+    {
+        $this->id = $data['id'];
+        $this->username = $data['username'];
+        $this->roles = $data['roles'];
+    }
 }

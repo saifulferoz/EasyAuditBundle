@@ -6,3 +6,8 @@ vendor
 composer.lock
 composer.phar
 phpunit.xml
+
+# Isolated PHP 8.2 test dependencies
+/vendor-php82/
+/composer.php82.lock
+/.phpunit.result.cache

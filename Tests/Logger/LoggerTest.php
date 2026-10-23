@@ -20,13 +20,15 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\AuditLog;
 
 class LoggerTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var Logger */
     protected $logger;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject */
     protected $entityManager;
 
-    public function setUp()
+    public function setUpTest()
     {
         $registry = $this
             ->getMockBuilder('Doctrine\Common\Persistence\ManagerRegistry')
@@ -76,7 +78,7 @@ class LoggerTest extends TestCase
         $event = new AuditLog();
         $event->setTypeId(DoctrineEvents::ENTITY_DELETED);
         $this->logger->log($event);
-        $this->assertAttributeEquals([$event], 'entityDeleteLogs', $this->logger);
+        $this->assertEquals([$event], $this->getObjectProperty($this->logger, 'entityDeleteLogs'));
     }
 
     public function testSavePendingLogsForDelete()
@@ -93,9 +95,9 @@ class LoggerTest extends TestCase
         $event = new AuditLog();
         $event->setTypeId(DoctrineEvents::ENTITY_DELETED);
         $this->logger->log($event);
-        $this->assertAttributeEquals([$event], 'entityDeleteLogs', $this->logger);
+        $this->assertEquals([$event], $this->getObjectProperty($this->logger, 'entityDeleteLogs'));
         $this->logger->savePendingLogs();
-        $this->assertAttributeEquals([], 'entityDeleteLogs', $this->logger);
+        $this->assertEquals([], $this->getObjectProperty($this->logger, 'entityDeleteLogs'));
     }
 
     public function testLogDoesNotCallToPersist()

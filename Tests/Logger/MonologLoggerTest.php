@@ -18,13 +18,15 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\AuditLog;
 
 class MonologLoggerTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     /** @var MonologLogger */
     protected $logger;
 
     /** @var \PHPUnit_Framework_MockObject_MockObject| LoggerInterface */
     protected $symfonyLogger;
 
-    public function setUp()
+    public function setUpTest()
     {
         $this->symfonyLogger = $this->createMock(LoggerInterface::class);
 

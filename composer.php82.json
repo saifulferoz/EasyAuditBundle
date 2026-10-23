@@ -1,0 +1,35 @@
+{
+    "name": "xiidea/easy-audit-php82-tests",
+    "description": "Isolated PHP 8.2 / Symfony 4.4 compatibility tests",
+    "license": "MIT",
+    "require": {
+        "php": "~8.2.0",
+        "xiidea/easy-audit": "1.4.x-dev"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^9.6",
+        "symfony/symfony": "4.4.*",
+        "friendsofsymfony/user-bundle": "^2.0",
+        "doctrine/common": ">=2.2 <3.0"
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": ".",
+            "options": {
+                "symlink": true,
+                "versions": {
+                    "xiidea/easy-audit": "1.4.x-dev"
+                }
+            }
+        }
+    ],
+    "autoload-dev": {
+        "psr-4": {
+            "Xiidea\\EasyAuditBundle\\Tests\\": "Tests/"
+        }
+    },
+    "config": {
+        "vendor-dir": "vendor-php82"
+    }
+}

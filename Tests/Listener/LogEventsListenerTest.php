@@ -19,13 +19,15 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\Event\Basic;
 
 class LogEventsListenerTest extends TestCase
 {
+    use \Xiidea\EasyAuditBundle\Tests\TestCaseCompatibilityTrait;
+
     public function testCheckPropertySetViaConstructor()
     {
         $loggerFactory = new LoggerFactory();
         $resolverFactory = new EventResolverFactory();
         $logEventsListener = new LogEventsListener($loggerFactory, $resolverFactory);
-        $this->assertAttributeEquals($loggerFactory, 'loggerFactory', $logEventsListener);
-        $this->assertAttributeEquals($resolverFactory, 'resolverFactory', $logEventsListener);
+        $this->assertEquals($loggerFactory, $this->getObjectProperty($logEventsListener, 'loggerFactory'));
+        $this->assertEquals($resolverFactory, $this->getObjectProperty($logEventsListener, 'resolverFactory'));
     }
 
     public function testResolveEventHandler()

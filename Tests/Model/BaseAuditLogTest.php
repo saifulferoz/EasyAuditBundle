@@ -17,11 +17,9 @@ use Xiidea\EasyAuditBundle\Tests\Fixtures\ORM\AuditLogEntity;
 
 class BaseAuditLogTest extends TestCase
 {
-    /**
-     * @expectedException \Psr\Log\InvalidArgumentException
-     */
     public function testSettingInvalidLevelWillThrowException()
     {
+        $this->expectException('\Psr\Log\InvalidArgumentException');
         $log = new AuditLog();
         $log->setLevel('invalid_level');
     }
