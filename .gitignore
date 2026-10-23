@@ -11,3 +11,6 @@ phpunit.xml
 /vendor-php82/
 /composer.php82.lock
 /.phpunit.result.cache
+
+# Generated coverage reports
+/build/

@@ -12,13 +12,21 @@ jobs:
           php-version: '8.2'
           tools: composer:2.9.2
           extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite
-          coverage: none
+          coverage: xdebug
       - name: Install Symfony 4.4 test dependencies
         run: |
           # Symfony 4.4 has known advisories; bypass blocking only for this legacy test job.
           COMPOSER=composer.php82.json composer update --no-interaction --prefer-dist --no-progress --no-security-blocking
-      - name: Run tests
-        run: vendor-php82/bin/phpunit -c phpunit.php82.xml.dist --no-coverage --do-not-cache-result
+      - name: Run tests with coverage
+        run: |
+          mkdir -p build/logs
+          XDEBUG_MODE=coverage vendor-php82/bin/phpunit -c phpunit.php82.xml.dist --do-not-cache-result --coverage-clover build/logs/clover.xml --coverage-cobertura build/logs/cobertura.xml
+      - name: Upload coverage to Coveralls
+        uses: coverallsapp/github-action@v2
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          file: build/logs/cobertura.xml
+          format: cobertura
 
   legacy:
     runs-on: ubuntu-latest

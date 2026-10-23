@@ -1,11 +1,23 @@
 build:
     nodes:
         analysis:
+            environment:
+                php:
+                    version: '7.3'
+            dependencies:
+                override:
+                    - composer self-update 2.9.2
+                    - composer require --dev --no-update 'symfony/symfony:4.4.*'
+                    # Advisory blocking is bypassed only for this legacy analysis stack.
+                    - composer update --no-interaction --prefer-dist --no-progress --no-security-blocking
             tests:
                 override:
                     - php-scrutinizer-run
 filter:
     excluded_paths:
+        - vendor/*
+        - vendor-php82/*
+        - build/*
         - Tests/*
         - Annotation/ORMSubscribedEvents.php
         - Resolver/EntityEventResolver.php

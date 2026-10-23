@@ -16,7 +16,10 @@ cache:
   directories:
     - $COMPOSER_CACHE_DIR
 
+install: false
+
 before_script:
+  - composer self-update --2.2
   - echo "memory_limit=-1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini
   - composer require --prefer-source --no-interaction symfony/symfony:${SYMFONY_VERSION}
 
@@ -24,5 +27,19 @@ script:
   - mkdir -p build/logs
   - vendor/bin/phpunit --coverage-clover build/logs/clover.xml
 
-after_script:
+after_success:
   - if [ "$TRAVIS_PHP_VERSION" == "7.3" ]; then php vendor/bin/php-coveralls -v --exclude-no-stmt; fi
+
+jobs:
+  include:
+    - name: PHP 8.2 / Symfony 4.4
+      php: '8.2'
+      env: SYMFONY_VERSION=4.4.*
+      install:
+        - composer self-update 2.9.2
+        # Advisory blocking is bypassed only for the legacy compatibility test stack.
+        - COMPOSER=composer.php82.json composer update --no-interaction --prefer-dist --no-progress --no-security-blocking
+      before_script:
+        - mkdir -p build/logs
+      script:
+        - XDEBUG_MODE=coverage vendor-php82/bin/phpunit -c phpunit.php82.xml.dist --do-not-cache-result --coverage-clover build/logs/clover.xml

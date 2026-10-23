@@ -1,1 +1,4 @@
+# Settings for the php-coveralls client used by Travis CI.
+# GitHub Actions uploads coverage through coverallsapp/github-action instead.
 service_name: travis-ci
+coverage_clover: build/logs/clover.xml

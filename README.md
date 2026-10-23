@@ -41,6 +41,13 @@ The CI workflow checks these combinations:
 | 7.3 | 4.4 | 6.5 |
 | 8.2 | 4.4 | 9.6 |
 
+GitHub Actions runs on pushes and pull requests, generates PHP 8.2 coverage,
+and uploads it to Coveralls. The repository must be connected to Coveralls.
+Travis also includes the PHP 8.2 job; Scrutinizer uses PHP 7.3 for its analysis
+with the legacy development dependencies. Travis and Scrutinizer require their
+GitHub integrations to be enabled in the respective service settings; their
+configuration files alone do not register push or pull request webhooks.
+
 Symfony 4.4 is [unmaintained](https://symfony.com/releases/4.4). This compatibility
 work does not address security advisories in the framework.
 

@@ -19,15 +19,18 @@
 
     <filter>
         <whitelist>
-            <directory>./</directory>
-            <exclude>
-                <directory>./Controller</directory>
-                <directory>./Exception</directory>
-                <directory>./Resources</directory>
-                <directory>./Tests</directory>
-                <directory>./vendor</directory>
-                <directory>./vendor-php82</directory>
-            </exclude>
+            <directory suffix=".php">./Annotation</directory>
+            <directory suffix=".php">./Common</directory>
+            <directory suffix=".php">./DependencyInjection</directory>
+            <directory suffix=".php">./Entity</directory>
+            <directory suffix=".php">./Events</directory>
+            <directory suffix=".php">./Listener</directory>
+            <directory suffix=".php">./Logger</directory>
+            <directory suffix=".php">./Model</directory>
+            <directory suffix=".php">./Resolver</directory>
+            <directory suffix=".php">./Subscriber</directory>
+            <directory suffix=".php">./Traits</directory>
+            <file>./XiideaEasyAuditBundle.php</file>
         </whitelist>
     </filter>
     <listeners>
